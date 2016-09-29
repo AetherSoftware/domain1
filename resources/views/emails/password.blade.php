@@ -1,0 +1,1 @@
+密码重设链接：http://{{ env('DOMAIN_NAME')}}/password/reset/{{$token}}
