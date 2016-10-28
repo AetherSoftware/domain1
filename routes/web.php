@@ -1,50 +1,19 @@
 <?php
+use Illuminate\Http\Request;
 
 Route::get('/',function(){
-    return 'root';
+    return '<a href="ed2k://|friend|欢迎加入eMule吧|F4F812C2A70E678FA8F5D01829366F1C|/">ed2k</a>';
 });
 
-Route::get('home',['middleware'=>'sso', function(\Illuminate\Http\Request $request){
-    return '登陆的用户id是'.$request->input('uid');
+Route::get('home',['middleware'=>'sso', function(){
+    return '登陆的用户id是'.request()->input('uid');
 }]);
 
-Route::get('login',function(){
-    return view('login');
-});
+Route::get('sso/login','Auth\LoginController@getLogin');
 
-Route::post('login',function(){
+Route::post('sso/login','Auth\LoginController@postLogin');
 
-    $email = Request::input('email');
-    $password = Request::input('password');
-    $forwardURL = Request::input('forward');
-    //需要过滤!!!!!!!!
-/*
-    $this->validate(request(), [
-        'passaword' => 'required',
-        'email' => 'required|email|unique:users'
-    ]);
-   */
-
-    $client = new \GuzzleHttp\Client();
-    $response = $client->post(
-        "http://localhost:8099/authlogin", [
-            'timeout' => 5,
-            'form_params' => [
-                'email' => $email,
-                'password' => $password
-            ]
-        ]
-    );
-    $return = \GuzzleHttp\json_decode($response->getBody());
-
-    if($return->status == 'error'){
-        return back()->withErrors(['aa'=>'aaaa']);//!!!!!!!!!!!!!!!!!返回错误信息
-    }
-
-    //!!!!!!!!cookie加密
-//!!!!!!!!!token需要设定过期时间
-    return redirect($forwardURL)->withCookie(Cookie::forever('ssotoken',$return->data,null,'.site.com'));
-});
+Route::get('sso/logout','Auth\LoginController@postLogout');
 
 
 

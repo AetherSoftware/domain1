@@ -14,10 +14,20 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
+                    @if (count($errors) > 0)
+                        <div class="alert alert-danger">
+                            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <div class="panel-heading">仪表盘</div>
 
                     <div class="panel-body">
-                        <form method="post" action="{{url('login')}}">
+                        <form method="POST" action="{{ url('sso/login') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="forward" value="{{ session('forward') }}">
                             <input type="text" name="email" value="">
